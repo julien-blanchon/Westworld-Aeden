@@ -7,7 +7,7 @@ aeden.py will try all the words of your database and get the answer.
 
 ### Prerequisites:
 
-You just need python2 and 2 package:
+You just need python2 and 2 packages:
 
 Python 2 (with pip): ```sudo apt-get -y install python python-pip python-dev build-essential```
 Python Websocket-client: ```sudo pip install websocket-client```
@@ -20,8 +20,9 @@ You can also use the requirements.txt file: ```sudo pip install -r requirements.
 Clone the repository just exec install.sh ```./install.sh``` (It will install all the requirement)
 
 #### Fast instal:
-	```	apt-get -y install git git-core python python-pip python-dev build-essential
-		git clone git@github.com:julien-blanchon/Westworld-Aeden.git
+	``` sudo apt-get update
+		sudo apt-get -y install git git-core python python-pip python-dev build-essential
+		git clone git://github.com/julien-blanchon/Westworld-Aeden.git
 		cd Westworld-Aeden/
 		sudo pip install -r requirements.txt
 		```
