@@ -106,11 +106,11 @@ def buildReponse(question): #Get and print the question response.
 		print "		Just a unknown"
 	elif msgid == "glitch": #If this ID is a glitch append it and ENJOY.
 		print "     Enjoy, a new glitch"
-	exportfile.write("%s,%s,%s,%s\n" % (question.replace(","," ").replace("\n", ". "), msgtext.replace(","," ").replace("\n", ". ").replace(), msgimg))  #Export each result with new ID in a csv without ","
+	exportfile.write("%s,%s,%s,%s\n" % (question.replace(",",";").replace("\n", ". "), msgtext.replace(",",";").replace("\n", ". "), msgid,, msgimg))  #Export each result with new ID in a csv without ","
 else: #If this ID is not in the cvs append it and ENJOY.
 	print "     Enjoy, a new ID" #If this ID is not in the current csv, append it and ENJOY.
 	AlreadyID.append(msgid)
-	exportfile.write("%s,%s,%s,%s\n" % (question.replace(","," ").replace("\n", ". "), msgtext.replace(","," ").replace("\n", ". "), msgid, msgimg)) #Export each result with new ID in a csv without ","
+	exportfile.write("%s,%s,%s,%s\n" % (question.replace(",",";").replace("\n", ". "), msgtext.replace(",",";").replace("\n", ". "), msgid, msgimg)) #Export each result with new ID in a csv without ","
 	
 
 def ask(question): #Final function for ask question to Aeden.
