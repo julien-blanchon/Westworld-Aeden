@@ -7,12 +7,17 @@ import time #Also need for the timescamp.
 import sys #Need if you want print that in a file ($ python aeden.py >> outpout.txt) and for cli version
 import csv
 reload(sys)
-sys.setdefaultencoding('utf-8') #For make it printable in a file
+
+sys.setdefaultencoding('utf-8')
+
+def filter_list(full_list, excludes):
+	s = set(excludes)
+	return (x for x in full_list if x not in s)
 
 try: #Try if the path of the dataset is specified
 	importfilepath = sys.argv[1] #The path of file to get dataset of word or sentence.
 except: #If any path is in argument, exit.
-	print "python aeden.py <YourWordDataset>"
+	print "python aeden.py <YourWordDataset> <YourExportFile>"
 	sys.exit()
 
 importfile = open(importfilepath).read().splitlines() #Default take sentence of each line.
@@ -28,7 +33,7 @@ for i in importfile:
 try : #Try if the path of the dataset is specified
 	exportfilepath = sys.argv[2] #The path of the csv to export.
 	exportfile = open(exportfilepath, 'r+a') #Open the exportfilepath specified in argument for append and read. Read for import any topic_id and append for append it all the new topic_id discovery.
-except: 
+except:
 	exportfilepath = "output.csv" #If any path is specified just create one
 	exportfile = open(exportfilepath, 'w') #Create and open a output.csv file.
 
@@ -46,11 +51,11 @@ for i in enumerate(AlreadyCsvID): #Just take the MSG ID in the csv (without dupl
 
 del AlreadyCsvID
 
-def connection(): 
+def connection():
 	url="https://zoobot-live.appspot.com/bot/5649391675244544/chat" #URL to post to get WebSocket.
 	data=json.dumps({
 		"timestamp": calendar.timegm(time.gmtime()), #Get actual time (Timestamp Epoch)
-		"actor": "bot", 
+		"actor": "bot",
 		"user_id": "USER",
 		"bot_id": 5649391675244544,
 		"action": "start"})
@@ -63,7 +68,7 @@ def connection():
 
 	print "Connection to Aeden ..."
 	global ws
-	ws = create_connection(socket_uri) # Connection to Aeden on the session previously generated. 
+	ws = create_connection(socket_uri) # Connection to Aeden on the session previously generated.
 
 	print "Connected !"
 	print "-----------------------------------------------" #Get and print the initialisation message.
@@ -91,7 +96,7 @@ def buildQuestion(question): #Build the question request with the right syntax a
 		,separators=(',',':'))) #for json.dump
 
 	print "\nSent: %s" % question #Print what is the question.
-	
+
 def buildReponse(question): #Get and print the question response.
 	result = json.loads(ws.recv()) #Get the question response and make it readable (json).
 	msgtext = result["messages"][0]["text"] #Get the question response (text).
@@ -106,20 +111,16 @@ def buildReponse(question): #Get and print the question response.
 		print "		Just a unknown"
 	elif msgid == "glitch": #If this ID is a glitch append it and ENJOY.
 		print "     Enjoy, a new glitch"
-		exportfile.write("%s,%s,%s,%s\n" % (question.replace(",",";").replace("\n", ". "), msgtext.replace(",",";").replace("\n", ". "), msgid, msgimg))  #Export each result with new ID in a csv without ","
+		exportfile.write("%s,%s,%s,%s\n" % (json.dumps(question.replace(",",";").replace("\n", ". ")), json.dumps(msgtext.replace(",",";").replace("\n", ". ")), msgid, msgimg))  #Export each result with new ID in a csv without ","
 	else: #If this ID is not in the cvs append it and ENJOY.
 		print "     Enjoy, a new ID" #If this ID is not in the current csv, append it and ENJOY.
 		AlreadyID.append(msgid)
-		exportfile.write("%s,%s,%s,%s\n" % (question.replace(",",";").replace("\n", ". "), msgtext.replace(",",";").replace("\n", ". "), msgid, msgimg)) #Export each result with new ID in a csv without ","
-	
+		exportfile.write("%s,%s,%s,%s\n" % (json.dumps(question.replace(",",";").replace("\n", ". ")), json.dumps(msgtext.replace(",",";").replace("\n", ". ")), msgid, msgimg)) #Export each result with new ID in a csv without ","
+
 
 def ask(question): #Final function for ask question to Aeden.
 	buildQuestion(question) #Ask Question.
 	buildReponse(question) #Take Response.
-	
-def filter_list(full_list, excludes):
-	s = set(excludes)
-	return (x for x in full_list if x not in s)
 
 QuestionAlreadyAsk=["Hello"]
 while QuestionAlreadyAsk[-1] != yourdataset[-1]:
@@ -127,7 +128,7 @@ while QuestionAlreadyAsk[-1] != yourdataset[-1]:
 	for question in list(filter_list(yourdataset, QuestionAlreadyAsk)): #Finall loop for ask any element in the dataset and get final result.
 		ask(question) #For each ask
 		QuestionAlreadyAsk.append(question)
-		
+
 print "\n Session close"
 print "\n The last question was: ", QuestionAlreadyAsk[-1]
-ws.close() #Close Aeden session.	
+ws.close() #Close Aeden session.
